@@ -1,0 +1,146 @@
+SQL（结构化查询语言）：数据定义、数据操作、数据保护
+
+SELCET [ALL|DISTINCT]
+		<目标列表达式>[别名][,<目标列表达式>[别名]]…
+FROM <表名>[别名][<连接表达式>]…
+WHERE <条件表达式>
+GROUP BY <列名>[<列名>] //按照指定列进行分组
+HAVING <条件表达式>		//提取满足HAVING子句中组条件表达式的那些组
+ORDER BY <列名>[ASC|DESC]	//按组升序/降序进行排序
+LIMIT <行数>[<OFFSET 偏移量>]	//按照LIMIT子句的偏移量和行数确定输出元组
+规定：
+（1）WHERE子句必须跟在FROM子句之后
+（2）HAVING子句必须跟在GROUP BY子句之后
+ (3) 数据类型：SAMLLINT、INT、NUMERIC(p, d)、VARCHAR、CHAR(n)、DATE、TIME、BOOLEAN
+
+创建表：
+CREATE TABLE examiner(
+  erid	CHAR(20)，
+	erage	SMALLINT，
+	···
+);
+
+改名：
+ALTER TABLE examiner RENAME TO erexamine;
+
+删除：
+DROP TABLE examiner
+ALTER TABLE 表名 [ADD COLUMN 新列名 数据类型]
+				 [RENAME COLUMN 旧列名 TO 新列名]
+				 [ALTER COLUMN 列名 TYPE 数据类型]
+				 [DROP COLUMN 列名]
+
+插入查询结果：
+INSERT INTO examinee VALUES(‘2018003850’,’吴致傲’,’男’,’20’,‘计算机’)
+INSERT INTO examinee(eename, eeage, eesex)VALUES(‘吴致傲’,’20’,’男’)
+//非主键属性可以为null
+
+删除查询结果：
+DELETE FROM examiner
+DELETE FROM examiner WHERE erage > 60
+
+更新查询结果：
+UPDATE examiner SET erage = erage + 1 WHERE erage > 30
+
+投影：
+SELECT eid, ename FROM exampaper;
+SELECT * FROM exampaper;
+SELECT eeid, 100-achieve FROM eeexam;
+SELECT *	FROM examiner	ORDER BY erdepa ASC, erage DESC
+
+选择：
+SELECT *
+FROM examinee
+WHERE eeage > 20;
+
+SQL语言专有运算符：
+BETWEEN...AND	NOT BETWEEN...AND
+IS NULL		IS NOT NULL
+IN 			NOT IN
+ALL|SOME|ANY
+EXISTS		NOT EXISTS
+UNIQUE		NOT UNIQUE
+LIKE		NOT LIKE
+
+SELECT *
+FROM examiner
+WHERE erdepa IN (‘历史学院’,’心理学院’)		
+AND erage > 58
+AND ersalary BETWEEN 6000 AND 9000
+AND ername LIKE ‘罗%’;
+
+聚集：从多个输入行中计算出一个结果。COUNT、SUM、AVG、MAX、MIN
+
+SELECT COUNT(*)
+FROM examiner;
+
+SELECT AVG(achieve)
+FROM eeexam
+WHERE eeid=’2018003850’;
+
+分组：
+SELECT eadepa, AVG(erage) AS avgage
+FROM examiner
+GROUP BY erdepa
+ORDER BY avgage;
+
+HAVING:
+SELECT eeid, COUNT(*)
+FROM eeexam
+GROUP BY eeid
+HAVING COUNT(*)>3
+ORDER BY COUNT(*)DESC;
+
+联接查询：内联接、左外联接、右外联接、全外联接
+笛卡尔积：
+SELECT *
+FROM examinee, eeexam
+WHERE examinee.eeid = eeexam.eeid
+
+SELECT *
+FROM examinee CROSS JOIN eeexam
+WHERE examinee.eeid = eeexam.eeid
+
+自然联接：
+SELECT *
+FROM examinee NATURAL JOIN eeexam;
+
+属性联接：
+SELECT *
+FROM examinee JOIN eeexam ON examinee.eeid = eeexam.eeid
+
+外联接：
+NATURAL LEFT/RIGHT OUTER JOIN
+NATURAL LEFT JOIN
+
+嵌套查询：
+WITH avgach(eeid, avgachieve) AS
+	(SELECT eeid, AVG(achieve)
+	 FROM eeexam
+	 GROUP BY eeid
+	)
+SELECT COUNT(*)
+FROM avgach
+WHERE avgachieve>=80
+WITH子句只在包含它自己的查询语句中有效，WITH子句中的AS不能省略
+
+SELECT COUNT(*)
+FROM(SELECT eeid, avg(achieve)
+	 FROM eeexam
+	 GROUP BY eeid
+	)AS avgach(eeid, avgachieve)
+WHERE avgachieve >= 80;
+
+SELECT eid, ename
+FROM exampaper
+WHERE eid IN
+		(SELECT eid
+		 FROM eeexam
+		 WHERE eeid=’2018003850’);
+
+SELECT *
+FROM examinee
+WHERE EXISTS
+	(SELECT *
+	 FROM eeexam
+	 WHERE eeid=examinee.eeid AND eid=’2018003850’);
