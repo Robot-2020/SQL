@@ -1,0 +1,14 @@
+//UPDATE
+
+UPDATE 表名 
+SET 列名 = 表达式，列名 = 表达式...
+WHERE 条件
+
+UPDATE examiner SET erage = erage + 1 WHERE erage > 30
+
+
+//INSERT
+
+INSERT INTO examinee VALUES(‘2018003850’,’吴致傲’,’男’,’20’,‘计算机’)
+INSERT INTO examinee(eename, eeage, eesex)VALUES(‘吴致傲’,’20’,’男’)
+//非主键属性可以为null
