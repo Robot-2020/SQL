@@ -128,3 +128,48 @@ HAVING eedepa IN (SELECT eedepa
                   
 //标量式嵌套（返回单行单列的单个值，就能把查询结果当作表达式放在任何地方）
 
+SELECT dname, (SELECT COUNT(*)
+		FROM examiner
+		WHERE examiner.erdepa = department.dname)
+FROM department;
+
+SELECT eeid, eename
+FROM examinee
+WHERE eedepa = (SELECT eedepa
+		FROM examinee
+		WHERE eeid = '2018003850');
+		
+SELECT (SELECT eedepa
+	FROM examinee
+	WHERE eeexam.eeid = examinee.eeid),
+	avg(achieve)
+FROM eeexam
+GROUP BY(
+	SELECT eedepa
+	FROM examinee
+	WHERE eeexam.eeid = examinee.eeid);
+	
+SELECT(
+	SELECT eedepa
+	FROM examinee
+	WHERE eeexam.eeid = examinee.eeid
+	(SELECT eename
+	FROM examinee
+	WHERE eeexam.eeid = examinee.eeid),
+	achieve
+FROM	eeexam
+ORDER BY(
+	SELECT eedepa
+	FROM examinee
+	WHERE eexam.eeid = examinee.eeid),
+	achieve ASC;
+	
+SELECT *
+FROM examinee
+ORDER BY eeid
+LIMIT(
+	(SELECT count(*)
+	FROM examinee)/4)
+OFFSET(
+	(SELECT count(*)
+	FROM examinee)/4);
