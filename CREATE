@@ -1,0 +1,35 @@
+//基本
+CREATE TABLE examiner(
+  erid	CHAR(20),
+	erage	SMALLINT，
+	···
+);
+
+//主键1
+CREATE TABLE examiner(
+  erid	CHAR(20) PRIMARY KEY,
+	erage	SMALLINT，
+	···
+);
+
+//主键2
+CREATE TABLE examiner(
+  erid	CHAR(20),
+	erage	SMALLINT，
+	···
+  PRIMARY KEY(eeid)
+);
+
+//外键
+CREATE TABLE examiner(
+  erid	CHAR(20) REFERENCES examinee(eeid),
+	erage	SMALLINT REFERENCES exampaper(eeid),
+	···
+);
+
+//条件约束
+CREATE TABLE examiner(
+  erid	CHAR(20),
+	erage	SMALLINT NOT NULL / UNIQUE,
+	···
+);
