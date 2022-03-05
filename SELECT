@@ -1,0 +1,130 @@
+//1.基本投影
+SELECT eid, ename 
+FROM exampaper;
+
+SELECT * 
+FROM exampaper;
+
+SELECT eeid, 100-achieve 
+FROM eeexam;
+
+SELECT *
+FROM examinee
+WHERE eeage > 20; //WHERE WHERE必须在FROM之后，且优先级大于聚集函数 因此WHERE里不能写聚集函数
+
+//2.聚集函数 
+AVG COUNT SUM MAX MIN 
+
+SELECT eadepa, AVG(erage) AS avgage
+FROM examiner
+GROUP BY erdepa;  //GROUP BY
+
+SELECT eeid, COUNT(*)
+FROM eeexam
+GROUP BY eeid
+HAVING COUNT(*)>3   //HAVING 必须在GROUP BY的分组下进行
+
+SELECT *	
+FROM examiner	
+ORDER BY erdepa ASC, erage DESC   //默认为ASC升序  DESC为降序
+
+SELECT eeid, COUNT(*)
+FROM eeexam
+GROUP BY eeid
+HAVING COUNT(*)>3
+ORDER BY COUNT(*)DESC;
+
+//3.运算符 
+IN EXISTS BETWEEN AND  IS NULL UNIQUE LIKE
+
+SELECT *
+FROM examiner
+WHERE erdepa IN (‘历史学院’,’心理学院’)		AND erage > 58  AND ersalary BETWEEN 6000 AND 9000  AND ername LIKE ‘罗%’;
+
+//IN & EXSISTS
+in: 先查子查询，适合于子查询中表数据小的情况
+exists: 先查主查询，适合于主查询中表数据小的情况
+
+in 和 exists的区别: 如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in, 反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。
+其实我们区分in和exists主要是造成了驱动顺序的改变(这是性能变化的关键)
+如果是exists，那么以外层表为驱动表，先被访问
+如果是IN，那么先执行子查询，所以我们会以驱动表的快速返回为目标，那么就会考虑到索引及结果集的关系了 ，另外IN时不对NULL进行处理。
+
+in 是把外表和内表作hash 连接，而exists是对外表作loop循环，每次loop循环再对内表进行查询。
+
+//4.联接查询
+内联接 ，/ CROSS JOIN（笛卡尔积）、 NATURAL JOIN（自然联接 所有同名列上取值相等的行）、 JOIN ON（属性联接、条件联接）
+
+笛卡尔积：
+SELECT *
+FROM examinee, eeexam
+WHERE examinee.eeid = eeexam.eeid
+
+SELECT *
+FROM examinee CROSS JOIN eeexam
+WHERE examinee.eeid = eeexam.eeid
+
+自然联接：
+SELECT *
+FROM examinee NATURAL JOIN eeexam;
+
+属性联接：
+SELECT *
+FROM examinee JOIN eeexam ON examinee.eeid = eeexam.eeid
+
+外联接 NATURAL LEFT/RIGHT [OUTER] JOIN   //悬浮块 置为NULL
+
+SELECT *
+FROM erexam NATURAL LEFT JOIN exampaper
+
+//5.嵌套查询
+一个SELECT-FROM-WHERE为一个查询块
+
+//集合式嵌套
+
+WITH avgach(eeid, avgachieve) AS
+	                            (SELECT eeid, AVG(achieve)
+	                             FROM eeexam
+	                             GROUP BY eeid )
+SELECT COUNT(*)
+FROM avgach
+WHERE avgachieve>=80
+
+WITH子句只在包含它自己的查询语句中有效，WITH子句中的AS不能省略
+
+SELECT COUNT(*)
+FROM(SELECT eeid, avg(achieve)
+	   FROM eeexam
+	   GROUP BY eeid
+	   )AS avgach(eeid, avgachieve)
+WHERE avgachieve >= 80;
+
+SELECT eid, ename
+FROM exampaper
+WHERE eid IN
+		      (SELECT eid
+		       FROM eeexam
+	      	 WHERE eeid=’2018003850’);
+
+SELECT *
+FROM examinee
+WHERE EXISTS
+	          (SELECT *
+	           FROM eeexam
+	           WHERE eeid=examinee.eeid AND eid=’2018003850’);
+
+若内层查询结果为空，则EXISTS产生‘false’，否则为‘true’；
+             
+//IN & EXSISTS
+in: 先查子查询，适合于子查询中表数据小的情况
+exists: 先查主查询，适合于主查询中表数据小的情况             
+
+SELECT eedepa, AVG(eeage)
+FROM examinee
+GROUP BY eedepa
+HAVING eedepa IN (SELECT eedepa
+                  FROM examinee
+                  WHERE eename = '刘诗诗');
+                  
+//标量式嵌套（返回单行单列的单个值，就能把查询结果当作表达式放在任何地方）
+
