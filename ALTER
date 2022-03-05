@@ -1,0 +1,19 @@
+ALTER TABLE 表名  [ADD COLUMN 新列名 数据类型]
+				          [RENAME COLUMN 旧列名 TO 新列名]
+			  	        [ALTER COLUMN 列名 TYPE 数据类型]
+                  [DROP COLUMN 列名]
+                  
+//增加列
+ALTER TABLE examiner ADD COLUMN erentrance CHAR(8);
+
+//改列名
+ALTER TABLE examiner RENAME COLUMN erentrance TO eren;
+
+//改列类型
+ALTER TABLE examiner ALTER COLUMN eren TYPE DATE;
+
+//删除列
+ALTER TABLE examiner DROP COLUMN eren;
+
+//改表名
+ALTER TABLE examiner RENAME TO erexamine;
