@@ -16,8 +16,8 @@ LIMIT <行数>[<OFFSET 偏移量>]	//按照LIMIT子句的偏移量和行数确�
 创建表：
 CREATE TABLE examiner(
   erid	CHAR(20)，
-	erage	SMALLINT，
-	···
+  erage	SMALLINT，
+  ···
 );
 
 改名：
@@ -46,7 +46,7 @@ UPDATE examiner SET erage = erage + 1 WHERE erage > 30
 SELECT eid, ename FROM exampaper;
 SELECT * FROM exampaper;
 SELECT eeid, 100-achieve FROM eeexam;
-SELECT *	FROM examiner	ORDER BY erdepa ASC, erage DESC
+SELECT * FROM examiner ORDER BY erdepa ASC, erage DESC
 
 选择：
 SELECT *
@@ -56,7 +56,7 @@ WHERE eeage > 20;
 SQL语言专有运算符：
 BETWEEN...AND	NOT BETWEEN...AND
 IS NULL		IS NOT NULL
-IN 			NOT IN
+IN 		NOT IN
 ALL|SOME|ANY
 EXISTS		NOT EXISTS
 UNIQUE		NOT UNIQUE
@@ -105,13 +105,12 @@ WHERE examinee.eeid = eeexam.eeid
 SELECT *
 FROM examinee NATURAL JOIN eeexam;
 
-属性联接：
+内联接：
 SELECT *
 FROM examinee JOIN eeexam ON examinee.eeid = eeexam.eeid
 
 外联接：
-NATURAL LEFT/RIGHT OUTER JOIN
-NATURAL LEFT JOIN
+LEFT/RIGHT (OUTER) JOIN
 
 嵌套查询：
 WITH avgach(eeid, avgachieve) AS
